@@ -1,5 +1,5 @@
 # ![Capochess](https://github.com/Capochaw/capochess/blob/main/2024-12-23%3D141011.png)
-a generalized pieces chess game
+(UNFINISHED) a generalized pieces chess game
 # compile
 Clone this repo and go to the folder and then write:
 
