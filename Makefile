@@ -1,7 +1,7 @@
-# Compilador y flags
-CC = gcc
-CFLAGS = -Wall -Iinc -lSDL2 -lSDL2_ttf -lSDL2_image -lunistring -g
-# CFLAGS = -Wall -Iinc -Isrc/buffers (cada vez que quiera meter una carpeta mas dentro del src, linkear asi) -lSDL2 -lSDL2_ttf -lSDL2_image -lunistring -g
+# Configuración del compilador y flags
+CXX = g++
+CXXFLAGS = -Wall -Iinc -g `sdl2-config --cflags`
+LDFLAGS = `sdl2-config --libs` -lSDL2_ttf -lSDL2_image
 
 # Directorios
 SRC_DIR = src
@@ -12,14 +12,16 @@ INCLUDE_DIR = inc
 # Nombre del ejecutable
 TARGET = $(BIN_DIR)/capochess
 
-# Encontrar todos los archivos .c dentro de src y sus subdirectorios
-SRC_FILES = $(shell find $(SRC_DIR) -name "*.c")
-# Los archivos .o se generarán en la carpeta obj
-OBJ_FILES = $(SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+# Encontrar todos los archivos .cpp en src/
+SRC_FILES = $(shell find $(SRC_DIR) -name "*.cpp")
 
-# Reglas
+# Generar los archivos .o en obj/
+OBJ_FILES = $(SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
+# Regla principal
 all: $(BIN_DIR) $(OBJ_DIR) $(TARGET)
 
+# Crear carpetas si no existen
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
@@ -28,14 +30,14 @@ $(OBJ_DIR):
 
 # Compilar el ejecutable final
 $(TARGET): $(OBJ_FILES)
-	$(CC) $(CFLAGS) -o $@ $(OBJ_FILES) -ly -lfl
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJ_FILES) $(LDFLAGS)
 
-# Regla genérica para compilar archivos .c
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
+# Regla para compilar archivos .cpp en .o
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # Limpiar archivos generados
 clean:
-	rm -rf $(OBJ_DIR)
+	rm -rf $(OBJ_DIR) $(BIN_DIR)
 
 .PHONY: all clean
